@@ -1,24 +1,37 @@
-project('VFRToCFR',
-        'cpp',
-        default_options : ['buildtype=release', 'c_std=c11', 'cpp_std=c++11'],
-        license : 'BSD-3-Clause',
-        version : '1')
+project('VFRToCFR', 'cpp',
+  default_options : ['buildtype=release', 'b_ndebug=if-release', 'cpp_std=c++14'],
+  meson_version : '>=0.51.0',
+  license : 'BSD-3-Clause',
+  version : '2.0.0'
+)
 
+# Prefer system VapourSynth headers, fall back to the vendored API 4 headers.
+system_vs_dep = dependency('vapoursynth', version : '>=55', required : false)
+if system_vs_dep.found()
+  vapoursynth_dep = system_vs_dep.partial_dependency(compile_args : true, includes : true)
+else
+  vapoursynth_dep = declare_dependency(include_directories : include_directories('include/vapoursynth'))
+endif
 
-# Dependencies
-vapoursynth = dependency('vapoursynth')
+# VapourSynth only autoloads *.dylib on macOS, while Meson defaults to *.so for modules.
+suffix = host_machine.system() == 'darwin' ? 'dylib' : []
 
+if get_option('python_package')
+  # Same layout as the VapourSynth PyPI package autoloads from: site-packages/vapoursynth/plugins
+  py = import('python').find_installation(pure : false)
+  install_dir = join_paths(py.get_install_dir(), 'vapoursynth', 'plugins')
+else
+  libdir = join_paths(get_option('prefix'), get_option('libdir'))
+  if system_vs_dep.found()
+    libdir = system_vs_dep.get_variable(pkgconfig : 'libdir', default_value : libdir)
+  endif
+  install_dir = join_paths(libdir, 'vapoursynth')
+endif
 
-# Sources
-src = [
-    'VFRToCFR.cpp']
-
-
-# Libs
-library(
-    'vfrtocfr',
-    src,
-    dependencies : [vapoursynth],
-    install_dir : join_paths(get_option('prefix'), get_option('libdir'), 'vapoursynth'),
-    install : true
+shared_module('vfrtocfr', 'VFRToCFR.cpp',
+  dependencies : vapoursynth_dep,
+  install : true,
+  install_dir : install_dir,
+  name_suffix : suffix,
+  gnu_symbol_visibility : 'hidden'
 )

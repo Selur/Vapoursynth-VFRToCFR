@@ -5,6 +5,9 @@ Converts Variable Frame Rate (VFR) video to a Constant Frame Rate (CFR) video th
 
 Ported from the Avisynth plugin written by Nicholai Main.
 
+This fork targets the VapourSynth API 4 (R55 and newer, required since R80). The namespace, the function
+and its arguments are unchanged.
+
 
 Usage
 =====
@@ -29,10 +32,22 @@ Parameters:
         If set to True, allows frame drops to acquire target framerate.
         Otherwise, throws an error if frames are dropped.
 
+Installation
+============
+Wheels for Windows x64, Linux x86_64 and macOS arm64 are attached to the GitHub releases::
+
+    pip install vapoursynth_vfrtocfr-<version>-py3-none-<platform>.whl
+
+The wheel puts the plugin into ``site-packages/vapoursynth/plugins``, where VapourSynth autoloads it.
+
 Building from sources
 =====================
-You need `The Meson Build System <http://mesonbuild.com>`_ installed.
+You need `The Meson Build System <http://mesonbuild.com>`_ installed. Without system VapourSynth headers the
+vendored API 4 headers in ``include/vapoursynth`` are used.
 ::
 
-    $ cd /path/to/src/root && mkdir build && cd build && meson --buildtype release .. && ninja  
-    # ninja install
+    $ meson setup build --buildtype release && ninja -C build
+
+Tests::
+
+    $ python3 test/test_vfrtocfr.py build/libvfrtocfr.so

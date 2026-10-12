@@ -1,0 +1,10 @@
+build/
+*.swp
+*.o
+*.so
+*.dll
+*.dylib
+.DS_Store
+__pycache__/
+dist/
+wheelhouse/
