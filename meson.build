@@ -2,7 +2,7 @@ project('VFRToCFR', 'cpp',
   default_options : ['buildtype=release', 'b_ndebug=if-release', 'cpp_std=c++14'],
   meson_version : '>=0.51.0',
   license : 'BSD-3-Clause',
-  version : '2.0.0'
+  version : '1.1.0'
 )
 
 # Prefer system VapourSynth headers, fall back to the vendored API 4 headers.

@@ -268,6 +268,6 @@ static void VS_CC VFRToCFRCreate(const VSMap *in, VSMap *out, void *userData, VS
 }
 
 VS_EXTERNAL_API(void) VapourSynthPluginInit2(VSPlugin *plugin, const VSPLUGINAPI *vspapi) {
-	vspapi->configPlugin("blaze.plugin.vfrtocfr", "vfrtocfr", "VFR to CFR Video Converter", VS_MAKE_VERSION(2, 0), VAPOURSYNTH_API_VERSION, 0, plugin);
+	vspapi->configPlugin("blaze.plugin.vfrtocfr", "vfrtocfr", "VFR to CFR Video Converter", VS_MAKE_VERSION(1, 1), VAPOURSYNTH_API_VERSION, 0, plugin);
 	vspapi->registerFunction("VFRToCFR", "clip:vnode;timecodes:data;fpsnum:int;fpsden:int;drop:int:opt;", "clip:vnode;", VFRToCFRCreate, nullptr, plugin);
 }
